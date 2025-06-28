@@ -1,6 +1,4 @@
 
-contacts = {}
-
 # Декоратор для обробки помилок
 def input_error(func):
     def inner(*args, **kwargs):
@@ -14,56 +12,56 @@ def input_error(func):
             return "Please enter a command and arguments."
     return inner
 
-# Команди
 @input_error
-def add_contact(args):
+def add_contact(args, contacts):
     name, phone = args
     contacts[name] = phone
     return "Contact added."
 
 @input_error
-def change_contact(args):
+def change_contact(args, contacts):
     name, phone = args
     contacts[name] = phone
     return "Contact changed."
 
 @input_error
-def show_phone(args):
+def show_phone(args, contacts):
     name = args[0]
     return contacts[name]
 
 @input_error
-def show_all_contacts(args):
+def show_all_contacts(args, contacts):
     if not contacts:
         return "No contacts found."
     return "\n".join(f"{name}: {phone}" for name, phone in contacts.items())
 
 @input_error
-def say_hello(args):
+def say_hello(args, contacts=None):
     return "How can I help you?"
 
-# Парсинг команди
 @input_error
 def parse_command(command_input):
     parts = command_input.strip().split()
+    if not parts:
+        raise IndexError
     command = parts[0].lower()
     args = parts[1:]
     return command, args
 
-# Головна функція
 def main():
+    contacts = {}
     while True:
         command_input = input("Enter a command: ")
         command, args = parse_command(command_input)
 
         if command == "add":
-            print(add_contact(args))
+            print(add_contact(args, contacts))
         elif command == "change":
-            print(change_contact(args))
+            print(change_contact(args, contacts))
         elif command == "phone":
-            print(show_phone(args))
+            print(show_phone(args, contacts))
         elif command == "all":
-            print(show_all_contacts(args))
+            print(show_all_contacts(args, contacts))
         elif command == "hello":
             print(say_hello(args))
         elif command in ["exit", "close"]:
