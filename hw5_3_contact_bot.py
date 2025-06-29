@@ -1,5 +1,3 @@
-
-# Декоратор для обробки помилок
 def input_error(func):
     def inner(*args, **kwargs):
         try:
@@ -52,7 +50,13 @@ def main():
     contacts = {}
     while True:
         command_input = input("Enter a command: ")
-        command, args = parse_command(command_input)
+
+        result = parse_command(command_input)
+        if not isinstance(result, tuple):
+            print(result)  # Показує повідомлення про помилку, якщо воно є
+            continue
+
+        command, args = result
 
         if command == "add":
             print(add_contact(args, contacts))
